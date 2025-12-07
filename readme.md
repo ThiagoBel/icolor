@@ -148,3 +148,6 @@ int main()
 | `gray_23()` | — |
 | — | `bg_light_gray()` |
 | — | `bg_dark_gray()` |
+
+## Releases
+https://github.com/ThiagoBel/icolor/releases
