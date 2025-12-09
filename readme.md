@@ -37,6 +37,49 @@ int main()
 }
 ```
 
+Themes
+```c++
+#include <iostream>
+#include "icolor.hpp"
+
+int main()
+{
+    std::cout << icolor::error() << "Error" << icolor::finished() << std::endl;
+    std::cout << icolor::sucess() << "Sucess" << icolor::finished() << std::endl;
+    std::cout << icolor::warn() << "Warn" << icolor::finished() << std::endl;
+    std::cout << icolor::info() << "Info" << icolor::finished() << std::endl;
+    std::cout << icolor::fatal() << "Fatal error" << icolor::finished() << std::endl;
+}
+```
+
+Say{} / Sayln{}
+```c++
+#include "icolor.hpp"
+
+int main()
+{
+    icolor::Sayln{} << "Hello, World!";
+    icolor::Say{} << "Hello, World!";
+
+
+    icolor::Sayln{} << icolor::red() << "Hello, World!" << icolor::finished();
+    icolor::Say{} << icolor::red() << "Hello, World!" << icolor::finished();
+}
+```
+
+rainbow()
+```c++
+#include "iostream"
+#include "icolor.hpp"
+
+int main()
+{
+    icolor::Sayln{} << icolor::rainbow("Hello, World!");
+
+    std::cout << icolor::rainbow("Hello, World!") << std::endl;
+}
+```
+
 ## Operating Systems
 
 | System | Supported |
@@ -48,7 +91,7 @@ int main()
 ## Colors
 
 | Texts | Backgrounds |
-|--------|--------|
+|--------|-------------|
 | `black()` | `bg_black()` |
 | `red()` | `bg_red()` |
 | `green()` | `bg_green()` |

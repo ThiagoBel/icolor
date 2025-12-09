@@ -1,4 +1,4 @@
-//      ######      :####:    .####.     ##          .####.    ######:
+//      ######      :####:    .2025.     ##          .####.    ######:
 //      ######      ######    ######     ##          ######    #######
 //        ##      :##:  .#   :##  ##:    ##         :##  ##:   ##   :##
 //        ##      ##         ##:  :##    ##         ##:  :##   ##    ##
@@ -17,10 +17,68 @@
 
 #include <string>
 #include <cstdlib>
-#include <iostream>
+#include <ctime>
 
 namespace icolor
 {
+    extern "C" long write(int, const void *, unsigned long);
+
+    struct Say
+    {
+        Say &operator<<(const char *txt)
+        {
+            unsigned long len = 0;
+            while (txt[len])
+                len++;
+
+            write(1, txt, len);
+            return *this;
+        }
+
+        Say &operator<<(const std::string &txt)
+        {
+            write(1, txt.c_str(), txt.size());
+            return *this;
+        }
+
+        Say &operator<<(std::string (*fn)())
+        {
+            return *this << fn();
+        }
+    };
+
+    struct Sayln
+    {
+        ~Sayln()
+        {
+            const char nl = '\n';
+            write(1, &nl, 1);
+        }
+
+        Sayln &operator<<(const char *txt)
+        {
+            unsigned long len = 0;
+            while (txt[len])
+                len++;
+            write(1, txt, len);
+            return *this;
+        }
+
+        Sayln &operator<<(const std::string &txt)
+        {
+            write(1, txt.c_str(), txt.size());
+            return *this;
+        }
+
+        Sayln &operator<<(std::string (*fn)())
+        {
+            return *this << fn();
+        }
+    };
+
+    Say say;
+    Sayln sayln;
+
     inline std::string finished() { return "\033[0m"; } // end
     inline std::string bold() { return "\033[1m"; }
     inline std::string dim() { return "\033[2m"; }
@@ -188,7 +246,46 @@ namespace icolor
     inline std::string bg_neon_green() { return "\033[48;2;57;255;20m"; }
     inline std::string bg_neon_blue() { return "\033[48;2;0;255;255m"; }
     inline std::string bg_neon_pink() { return "\033[48;2;255;20;147m"; }
-    inline std::string coloredText(const std::string &text, const std::string &color) { return color + text + finished(); }
-}
+    inline std::string error() { return "\033[38;2;255;0;0m"; }
+    inline std::string sucess() { return "\033[38;2;144;238;144m"; }
+    inline std::string warn() { return "\033[38;2;255;255;0m"; }
+    inline std::string info() { return "\033[38;2;100;200;255m"; }
+    inline std::string fatal() { return "\033[38;2;255;80;80m\033[48;2;60;0;0m"; }
 
+    inline std::string coloredText(const std::string &text, const std::string &color)
+    {
+        return color + text + finished();
+    }
+    inline std::string rainbow(const std::string &text)
+    {
+        std::string result;
+
+        static bool seeded = false;
+        if (!seeded)
+        {
+            std::srand((unsigned)std::time(nullptr));
+            seeded = true;
+        }
+
+        for (char c : text)
+        {
+            int r = std::rand() % 256;
+            int g = std::rand() % 256;
+            int b = std::rand() % 256;
+
+            result += "\033[38;2;";
+            result += std::to_string(r);
+            result += ";";
+            result += std::to_string(g);
+            result += ";";
+            result += std::to_string(b);
+            result += "m";
+            result += c;
+        }
+
+        result += finished();
+        return result;
+    }
+
+}
 #endif
